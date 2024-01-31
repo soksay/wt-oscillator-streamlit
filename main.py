@@ -54,9 +54,6 @@ st.markdown(f'<div style="text-align: center;">Wave trend oscillator signals cal
 st.markdown(f'<div style="text-align: center;">last update : {last_update}</div>', unsafe_allow_html=True)
 st.write('----------------------------------------')
 
-shouldDisplayPivoted = st.checkbox("Pivot data on Reference Date")
-
-
 gb = GridOptionsBuilder()
 
 gb.configure_auto_height()
