@@ -69,7 +69,7 @@ gb.configure_default_column(
 #configures symbols column to have a 100px initial width
 gb.configure_column(field="symbol",
                     header_name="Symbols",
-                    width=100,
+                    width=1,
                     rowGroup=True
                     )
 
@@ -85,7 +85,6 @@ gb.configure_column(
 gb.configure_column(
     field="timeframe_ordered",
     header_name="timeframe",
-    width=100,
     pivot=True
 )
 
@@ -100,8 +99,7 @@ gb.configure_column(
 gb.configure_grid_options(
     tooltipShowDelay=0,
     pivotMode=True,
-    width=1000,
-    pivotDefaultExpanded= -1
+    suppressExpandablePivotGroups = True
 )
 go = gb.build()
 
