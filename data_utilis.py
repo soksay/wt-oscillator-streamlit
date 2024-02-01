@@ -115,10 +115,19 @@ def create_signals_dataframe(dataframe):
     # Pivot the table
     pivot_table = dataframe.pivot_table(index='symbol', columns='signal_timeframe', values='value_exists', aggfunc='any',
                                  fill_value=False)
-    pivot_table['COUNT SIGNALS'] = pivot_table.sum(axis=1)
+    # Filtrer les colonnes dont les noms contiennent "a"
+    buy_columns = [col for col in pivot_table.columns if 'BUY' in col]
+    sell_columns = [col for col in pivot_table.columns if 'SELL' in col]
+
+
+    # Appliquer la somme uniquement sur les colonnes filtrées
+    pivot_table['TOT'] = pivot_table.sum(axis=1)
+    pivot_table['BUY'] = pivot_table[buy_columns].sum(axis=1)
+    pivot_table['SELL'] = pivot_table[sell_columns].sum(axis=1)
     pivot_table = pivot_table.reset_index()
     pivot_table = pivot_table.reindex(columns=['symbol', 'BUY_15m', 'BUY_1h', 'BUY_4h', 'BUY_1d', 'BUY_1w', 'SELL_15m',
-                                               'SELL_1h', 'SELL_4h', 'SELL_1d', 'SELL_1w', 'COUNT SIGNALS'])
+                                               'SELL_1h', 'SELL_4h', 'SELL_1d', 'SELL_1w',
+                                               'BUY', 'SELL', 'TOT'])
     pivot_table = pivot_table.dropna(axis=1)
 
     return pivot_table
