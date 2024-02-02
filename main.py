@@ -1,4 +1,3 @@
-
 from data_utilis import *
 
 # get the data from gcs
@@ -54,7 +53,7 @@ else:
                        "link_tv": st.column_config.LinkColumn(
                            "Daily chart",
                            help='Link to tradingview charts',
-                           display_text="Open chart"
+                           display_text="Open 1D chart"
                        )
                    },
                    hide_index=True,
