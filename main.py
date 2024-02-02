@@ -19,7 +19,6 @@ df = add_calculate_fields(df)
 
 # Pivot the table
 active_signals_df = create_signals_dataframe(df)
-
 st.markdown(
     f'<div style="text-align: center;">Wave trend oscillator signals calculated on Kucoin USDT pairs (top 100 crypto from Coinmarketcap)</div>',
     unsafe_allow_html=True)
@@ -33,9 +32,33 @@ st.dataframe(timestamp_display_df, hide_index=True,width=1000 )
 on = st.toggle('Display raw data')
 
 if on:
-    st.dataframe(
-        df[['symbol', 'timeframe', 'timestamp_datetime', 'signal', 'PriceUSD', 'WT1', 'WT2', 'MarketCapPosition']],
-        use_container_width=True, hide_index=True,width=1000, height=(len(df) + 1) * 35 + 3)
+    st.data_editor(df,
+                   column_config={
+                       "link_tv_timeframes": st.column_config.LinkColumn(
+                           "Chart",
+                           help='Link to tradingview charts',
+                           display_text="Open chart"
+                       ),
+                   },
+                   hide_index=True,
+                   width=1000,
+                   height=(len(df) + 1) * 35 + 3,
+                   use_container_width=True,
+                   column_order=('link_tv_timeframes','symbol', 'timeframe', 'timestamp_datetime', 'signal', 'PriceUSD',
+                                 'WT1', 'WT2','MarketCapPosition')
+                   )
 else:
-    st.dataframe(active_signals_df, hide_index=True, width=1000, height=(len(active_signals_df) + 1) * 35 + 3)
 
+    st.data_editor(active_signals_df,
+                   column_config={
+                       "link_tv": st.column_config.LinkColumn(
+                           "Daily chart",
+                           help='Link to tradingview charts',
+                           display_text="Open chart"
+                       )
+                   },
+                   hide_index=True,
+                   width=1000,
+                   height=(len(active_signals_df) + 1) * 35 + 3,
+                   use_container_width=True,
+                   )

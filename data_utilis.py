@@ -109,13 +109,23 @@ def add_calculate_fields(dataframe):
     dataframe['signal_timeframe'] = dataframe['signal'] + '_' + dataframe['timeframe']
     dataframe['value_exists'] = True
 
+    map_tv_timeframes = {
+        '15m':'15',
+        '1h':'1H',
+        '4h':'4H',
+        '1d':'1D',
+        '1w':'1W'
+    }
+    dataframe['link_tv_timeframes'] = "https://www.tradingview.com/chart/?symbol=KUCOIN:"+ dataframe.symbol.str.replace('/','') \
+                           +"&interval="+dataframe.timeframe.replace(map_tv_timeframes)
+
     return dataframe
 
 def create_signals_dataframe(dataframe):
     # Pivot the table
-    pivot_table = dataframe.pivot_table(index='symbol', columns='signal_timeframe', values='value_exists', aggfunc='any',
+    pivot_table = dataframe.pivot_table(index='symbol',columns='signal_timeframe', values='value_exists', aggfunc='any',
                                  fill_value=False)
-    # Filtrer les colonnes dont les noms contiennent "a"
+    # Filtrer les colonnes pour calcul nombre de signaux
     buy_columns = [col for col in pivot_table.columns if 'BUY' in col]
     sell_columns = [col for col in pivot_table.columns if 'SELL' in col]
 
@@ -125,9 +135,12 @@ def create_signals_dataframe(dataframe):
     pivot_table['BUY'] = pivot_table[buy_columns].sum(axis=1)
     pivot_table['SELL'] = pivot_table[sell_columns].sum(axis=1)
     pivot_table = pivot_table.reset_index()
-    pivot_table = pivot_table.reindex(columns=['symbol', 'BUY_15m', 'BUY_1h', 'BUY_4h', 'BUY_1d', 'BUY_1w', 'SELL_15m',
+    pivot_table['link_tv'] = "https://www.tradingview.com/chart/?symbol=KUCOIN:" + \
+                             pivot_table.symbol.str.replace('/','') + "&interval=1D"
+    pivot_table = pivot_table.reindex(columns=['link_tv','symbol', 'BUY_15m', 'BUY_1h', 'BUY_4h', 'BUY_1d', 'BUY_1w', 'SELL_15m',
                                                'SELL_1h', 'SELL_4h', 'SELL_1d', 'SELL_1w',
                                                'BUY', 'SELL', 'TOT'])
+
     pivot_table = pivot_table.dropna(axis=1)
 
     return pivot_table
